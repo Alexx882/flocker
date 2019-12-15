@@ -53,11 +53,18 @@ class _UsernameViewState extends State<UsernameView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: const Color.fromRGBO(155, 196, 203, 1),
       appBar: AppBar(
-        title: Text("Wer bist du?"),
+        title: Text(
+          "Wer bist du?",
+          style: TextStyle(
+            color: const Color.fromRGBO(45, 49, 66, 1),
+          ),
+        ),
       ),
       body: Center(
         child: Card(
+          color: const Color.fromRGBO(168, 249, 255, .8),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: FractionallySizedBox(
@@ -68,6 +75,17 @@ class _UsernameViewState extends State<UsernameView> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Sag uns einen Namen!",
+                        style: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8),
                     Text(
                       "Wie heißt du? Unter diesem Namen wirst du dann auch anderen angezeigt.",
                       style: TextStyle(
@@ -75,7 +93,22 @@ class _UsernameViewState extends State<UsernameView> {
                       ),
                     ),
                     TextFormField(
-                      decoration: InputDecoration(labelText: "Name"),
+                      cursorColor: const Color.fromRGBO(45, 49, 66, 1),
+                      decoration: InputDecoration(
+                        labelText: "Name",
+                        labelStyle: TextStyle(
+                          color: const Color.fromRGBO(45, 49, 66, 1),
+                        ),
+                        focusColor: const Color.fromRGBO(45, 49, 66, 1),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                          color: const Color.fromRGBO(45, 49, 66, 1),
+                        )),
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                          color: const Color.fromRGBO(45, 49, 66, 1),
+                        )),
+                      ),
                       onSaved: (String value) => _username = value,
                       validator: (String value) {
                         String sanitized = value.trim();
@@ -104,7 +137,7 @@ class _UsernameViewState extends State<UsernameView> {
                           Text(
                             "Loslegen!",
                             style: TextStyle(
-                              color: Colors.green,
+                              color: const Color.fromRGBO(45, 49, 66, 1),
                             ),
                           ),
                         ],

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  final Color colorAeroBlue = const Color.fromRGBO(193, 247, 220, 1);
+  final Color colorAeroBlue = const Color.fromRGBO(168, 249, 255, 1);
   final Color colorPaleCerulean = const Color.fromRGBO(155, 196, 203, 1);
   final Color colorGunmetal = const Color.fromRGBO(45, 49, 66, 1);
 
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primaryColor: colorPaleCerulean,
+        primaryColor: colorAeroBlue,
         accentColor: colorAeroBlue,
         buttonTheme: ButtonThemeData(
           buttonColor: colorPaleCerulean,

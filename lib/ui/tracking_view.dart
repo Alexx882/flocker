@@ -88,7 +88,7 @@ class _TrackingViewState extends State<TrackingView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(234, 232, 255, 1),
+      backgroundColor: const Color.fromRGBO(234, 232, 255, 1),
       appBar: AppBar(
         title: Text(
           _name != null ? helloPrefix + " $_name" : "Hallo!",
@@ -112,7 +112,7 @@ class _TrackingViewState extends State<TrackingView>
                     Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Theme.of(context).primaryColor,
+                        color: const Color.fromRGBO(155, 196, 203, 1),
                       ),
                     ),
 
