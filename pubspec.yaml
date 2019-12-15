@@ -1,0 +1,24 @@
+name: flocker
+description: A new Flutter project.
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^0.1.2
+  path_provider: ^1.5.1
+  http: ^0.12.0+2
+  shared_preferences: ^0.5.6
+  location: ^2.3.5
+  cron: ^0.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
