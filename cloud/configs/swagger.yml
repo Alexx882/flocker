@@ -41,6 +41,20 @@ paths:
             description: "Successful operation"
             schema:
               $ref: "#/definitions/Location"
+  
+  /location.png:
+    get:
+        operationId: "rest.location.getImage"
+        tags:
+            - "Location data"
+        summary: "Get location data as image"
+        parameters: []
+        produces:
+            - "image/png"
+        responses:
+            200:
+                description: "Successful operation"
+           
               
 definitions:
   Location:
