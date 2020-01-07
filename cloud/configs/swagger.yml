@@ -1,0 +1,60 @@
+swagger: "2.0"
+info:
+  title: Flocker
+  description: This is the documentation for the best app available.
+  version: "1.0.0"
+
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+
+basePath: "/api"
+
+paths:
+  /location:
+    post:
+        operationId: "rest.location.post"
+        tags:
+          - "Location data"
+        summary: "Add new location data"
+        parameters:
+          - in: body 
+            name: "Location"
+            description: "The location data to be added"
+            required: true
+            schema:
+              $ref: "#/definitions/Location"
+        responses:
+          201:
+            description: "Successful operation"
+          400:
+            description: "Invalid input"
+    get:
+        operationId: "rest.location.get"
+        tags:
+            - "Location data"
+        summary: "Get location data"
+        parameters: []
+        responses:
+          200:
+            description: "Successful operation"
+            schema:
+              $ref: "#/definitions/Location"
+              
+definitions:
+  Location:
+    type: "object"
+    properties:
+      id:
+        type: string
+        format: uuid
+      username:
+        type: "string"
+      latitude:
+        type: "number"
+      longitude:
+        type: "number"
+      timestamp:
+        type: "number"
+    
