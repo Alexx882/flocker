@@ -1,7 +1,11 @@
 from flask import request, Response
+from db.repository import Repository
+repo = Repository()
 
 def post():
-    return Response(status=501)
+    body = request.json
+    repo.addLocation(body)
+    return Response(status=201)
 
 def get():
-    return Response(status=200)
+    return repo.getLocations()
