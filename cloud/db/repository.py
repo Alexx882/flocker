@@ -1,9 +1,11 @@
+from db.location_datastore import LocationDatastore
+
 class Repository:
     def __init__(self):
-        self.locations = []
+        self.store = LocationDatastore.get_instance()
 
     def addLocation(self, location):
-        self.locations.append(location)
+        self.store.add(location)
 
     def getLocations(self):
-        return self.locations
+        return self.store.get()
