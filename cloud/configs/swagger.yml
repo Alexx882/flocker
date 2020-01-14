@@ -57,7 +57,7 @@ paths:
 
   /cluster.png:
     get:
-        operationId: "rest.cluster.getImage"
+        operationId: "rest.cluster.get_image"
         tags:
             - "Clusters"
         summary: "Get clustered data as image"

@@ -9,17 +9,16 @@ clusterer = Clusterer()
 
 def get():
     locations = repo.getLocations()
-    labels = clusterer.create_labels(locations)
-    
-    return labels
 
-def getImage():
+    clusters = clusterer.run(locations)
+
+    return clusters
+
+def get_image():
     locations = repo.getLocations()
 
-    labels = clusterer.create_labels(locations)
-    fig = clusterer.draw_locations(locations, labels)
+    fig = clusterer.draw_locations(locations)
 
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
-
     return Response(output.getvalue(), mimetype="image/png")

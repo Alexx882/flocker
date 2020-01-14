@@ -2,13 +2,20 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import DBSCAN
+from typing import List, Dict
 
 class Clusterer:
     def __init__(self, epsilon=11, min_points=2):
         self.epsilon = epsilon
         self.min_points = min_points
 
-    def draw_locations(self, locations:list, labels:list) -> plt.Figure:
+    def draw_locations(self, locations:List, labels:List=None) -> plt.Figure:
+        if locations is None or len(locations) == 0:
+            return self._draw_locations()
+
+        if labels is None or len(locations) != len(labels):
+            labels = self.create_labels(locations)
+
         return self._draw_locations(
             locations = np.asarray([(l['latitude'], l['longitude']) for l in locations]),
             partition_info = labels
@@ -36,7 +43,7 @@ class Clusterer:
             
         return fig
     
-    def create_labels(self, locations:list) -> list:
+    def create_labels(self, locations:List) -> List:
         if locations is None or len(locations) == 0:
             return locations # trash in trash out
 
@@ -48,5 +55,23 @@ class Clusterer:
 
         return labels.tolist()
 
-    def label_locations(self, locations:list, labels:list) -> list:
-        pass
+    def label_locations(self, locations:List[Dict], labels:List) -> List:
+        if len(locations) != len(labels):
+            raise Exception("locations and labels has to have same length")
+
+        for i in range(len(locations)):
+            locations[i]['cluster_label'] = labels[i]
+
+    def run(self, locations:List[Dict]) -> Dict[int, List[Dict]]:
+        if locations is None or len(locations) == 0:
+            # raise Exception("locations has to contain something")
+            return {}
+
+        labels = self.create_labels(locations)
+        self.label_locations(locations, labels)
+
+        clusters = {}
+        for label in labels:
+            clusters[label] = [l for l in locations if l['cluster_label'] == label]
+        
+        return clusters
