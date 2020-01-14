@@ -8,13 +8,13 @@ class Clusterer:
         self.epsilon = epsilon
         self.min_points = min_points
 
-    def print_locations(self, locations:list, labels:list) -> plt.Figure:
-        return self._print_locations(
+    def draw_locations(self, locations:list, labels:list) -> plt.Figure:
+        return self._draw_locations(
             locations = np.asarray([(l['latitude'], l['longitude']) for l in locations]),
             partition_info = labels
         )
 
-    def _print_locations(self, locations:np.ndarray=None, centroids:np.ndarray=None, partition_info=None) -> plt.Figure:
+    def _draw_locations(self, locations:np.ndarray=None, centroids:np.ndarray=None, partition_info=None) -> plt.Figure:
         fig = plt.Figure()
         axis = fig.add_subplot(1, 1, 1)
 
@@ -36,7 +36,7 @@ class Clusterer:
             
         return fig
     
-    def start(self, locations:list) -> list:
+    def create_labels(self, locations:list) -> list:
         if locations is None or len(locations) == 0:
             return locations # trash in trash out
 
@@ -47,3 +47,6 @@ class Clusterer:
         labels = dbsc.labels_
 
         return labels.tolist()
+
+    def label_locations(self, locations:list, labels:list) -> list:
+        pass
