@@ -16,7 +16,7 @@ paths:
     post:
         operationId: "rest.location.post"
         tags:
-          - "Location data"
+          - "Locations"
         summary: "Add new location data"
         parameters:
           - in: body 
@@ -33,7 +33,7 @@ paths:
     get:
         operationId: "rest.location.get"
         tags:
-            - "Location data"
+            - "Locations"
         summary: "Get location data"
         parameters: []
         responses:
@@ -42,12 +42,25 @@ paths:
             schema:
               $ref: "#/definitions/Location"
   
-  /location.png:
+  /cluster:
     get:
-        operationId: "rest.location.getImage"
+        operationId: "rest.cluster.get"
         tags:
-            - "Location data"
-        summary: "Get location data as image"
+            - "Clusters"
+        summary: "Get clustered data"
+        parameters: []
+        responses:
+            200:
+                description: "Successful operation"
+                schema:
+                  $ref: "#/definitions/Cluster"
+
+  /cluster.png:
+    get:
+        operationId: "rest.cluster.getImage"
+        tags:
+            - "Clusters"
+        summary: "Get clustered data as image"
         parameters: []
         produces:
             - "image/png"
@@ -71,4 +84,10 @@ definitions:
         type: "number"
       timestamp:
         type: "number"
-    
+  Cluster:
+    type: "object"
+    properties:
+      id:
+        type: string
+        format: uuid
+      
