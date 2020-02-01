@@ -12,6 +12,6 @@ class Repository:
         self.store.add_location(location)
 
     def getLocations(self) -> List[Location]:
-        # with open('db/data.json', 'r') as f:
-        #     return [Location(ld) for ld in json.loads(f.read())]
-        return self.store.get_locations()
+        with open('db/data.json', 'r') as f:
+            return [Location(ld) for ld in json.loads(f.read())]
+        # return self.store.get_locations()

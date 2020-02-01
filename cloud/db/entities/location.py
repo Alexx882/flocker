@@ -3,15 +3,15 @@ from datetime import datetime
 
 
 class Location:
-    def __init__(self, location_info=None, ):
+    def __init__(self, location_info=None):
         super().__init__()
         if location_info is not None:
-            self.id = location_info['id']
             self.latitude = location_info['latitude']
             self.longitude = location_info['longitude']
             self.timestamp = datetime.fromtimestamp(location_info['timestamp'])
             self.timestamp_raw = location_info['timestamp']
             self.username = location_info['username']
+            self.id = f'{self.username}-{self.timestamp}'
 
     def to_serializable_dict(self):
         return {

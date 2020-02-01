@@ -3,6 +3,8 @@ from db.repository import Repository
 from datetime import datetime, timedelta
 from typing import List, Dict
 from db.entities.location import Location
+from db.entities.top_location import TopLocation
+from db.entities.user_cluster import UserCluster
 import statistics
 import time
 
@@ -11,9 +13,9 @@ user_clusterer = Clusterer(epsilon=10**-4)
 
 repo = Repository()
 all_location_traces = repo.getLocations()
-
 time_slices = list(range(24))
 
+cluster_list = []
 
 def work():
     # for each date in timestamp list
@@ -43,9 +45,12 @@ def work():
             # cluster the main locations for all users
             cluster_result = user_clusterer.run(main_locations)
 
+            clusters={}
             for key, vals in cluster_result.items():
-                print(
-                    f"{cur_date} @ {cur_hour}h-{cur_hour+1}h (Group #{key}): {[v['username'] for v in vals]}")
+                clusters[key] = [v['username'] for v in vals]
+                print(f"{cur_date} @ {cur_hour}h-{cur_hour+1}h (Group #{key}): {[v['username'] for v in vals]}")
+
+            cluster_list.append(UserCluster(cur_date, cur_hour, clusters))
 
 
 def get_main_location_for_user(location_traces: List[Location], username: str) -> dict:
@@ -79,3 +84,5 @@ def get_center_of_2d_points(points, nr_decimal_places=5) -> dict:
 start_time = time.time()
 work()
 print("--- %s seconds ---" % (time.time() - start_time))
+
+print(cluster_list)
