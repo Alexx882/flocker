@@ -1,0 +1,41 @@
+from __future__ import annotations
+import boto3
+from decimal import Decimal
+from db.entities.location import Location
+from typing import List, Dict
+
+
+class DynamoDbRepository:
+    '''This Singelton accesses AWS DynamoDB'''
+    _instance: DynamoDbRepository = None
+
+    @staticmethod
+    def get_instance() -> DynamoDbRepository:
+        if DynamoDbRepository._instance == None:
+            DynamoDbRepository._instance = DynamoDbRepository()
+        return DynamoDbRepository._instance
+
+    def __init__(self):
+        if DynamoDbRepository._instance != None:
+            raise Exception("This class is a singleton!")
+
+        self.database = boto3.resource('dynamodb', region_name='us-east-2')
+
+    def add_location(self, location: Location):
+        '''Inserts a location to the Location table of AWS'''
+        table = self.database.Table('Location')
+        table.put_item(
+            Item={
+                "id": location.id,
+                "latitude": Decimal(f'{location.latitude}'),
+                "longitude": Decimal(f'{location.longitude}'),
+                "timestamp": location.timestamp_raw,
+                "username": location.username
+            }
+        )
+
+    def get_locations(self) -> List[Location]:
+        '''Reads all locations from the Location table of AWS'''
+        table = self.database.Table('Location')
+        response = table.scan()
+        return [Location(l) for l in response['Items']]

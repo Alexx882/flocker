@@ -1,26 +1,36 @@
 from processing.clusterer import Clusterer
 from db.repository import Repository
 from datetime import datetime, timedelta
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from db.entities.location import Location
+from db.entities.popular_location import PopularLocation
+from db.entities.user_cluster import UserCluster
 import statistics
+from collections import Counter
 import time
+
+NR_DECIMAL_FOR_BEST_LOCATIONS = 4
 
 main_loc_clusterer = Clusterer(epsilon=10**-4)
 user_clusterer = Clusterer(epsilon=10**-4)
 
-repo = Repository()
-all_location_traces = repo.getLocations()
-
 time_slices = list(range(24))
 
 
-def work():
+def run_clustering():
+    user_clusters: List[UserCluster] = []
+    popular_locations: List[PopularLocation] = []
+    
+    repo = Repository()
+    all_location_traces = repo.getLocations()
+
     # for each date in timestamp list
     dates = {trace.timestamp.date() for trace in all_location_traces}
     for cur_date in dates:
         traces_for_cur_date = [
             trace for trace in all_location_traces if trace.timestamp.date() == cur_date]
+
+        location_counter: Dict[str, int] = {}
 
         # for each hour of that day
         for cur_hour in time_slices:
@@ -43,9 +53,31 @@ def work():
             # cluster the main locations for all users
             cluster_result = user_clusterer.run(main_locations)
 
+            clusters = {}
             for key, vals in cluster_result.items():
-                print(
-                    f"{cur_date} @ {cur_hour}h-{cur_hour+1}h (Group #{key}): {[v['username'] for v in vals]}")
+                clusters[key] = [v['username'] for v in vals]
+                # print(f"{cur_date} @ {cur_hour}h-{cur_hour+1}h (Group #{key}): {[v['username'] for v in vals]}")
+
+            # add the clusters for the cur_hour to the global cluster list
+            user_clusters.append(UserCluster(cur_date, cur_hour, clusters))
+
+            # add locations for cur_hour to location counter
+            for main_l in main_locations:
+                key = {'lat': round(main_l['latitude'], NR_DECIMAL_FOR_BEST_LOCATIONS),
+                       'long': round(main_l['longitude'], NR_DECIMAL_FOR_BEST_LOCATIONS)}.__repr__()
+                if key not in location_counter:
+                    location_counter[key] = 0
+                location_counter[key] += 1
+
+            # print(f"{cur_date} @ {cur_hour}h-{cur_hour+1}h: {main_locations}")
+
+        # add the top three locations to the global popular location list
+        top_locations = get_top_three_locations(location_counter)
+        top_locations = [l[0] for l in top_locations]
+        popular_locations.append(PopularLocation(cur_date, top_locations))
+
+    store_user_clusters(user_clusters)
+    store_popular_locations(popular_locations)
 
 
 def get_main_location_for_user(location_traces: List[Location], username: str) -> dict:
@@ -76,6 +108,18 @@ def get_center_of_2d_points(points, nr_decimal_places=5) -> dict:
     return center
 
 
-start_time = time.time()
-work()
-print("--- %s seconds ---" % (time.time() - start_time))
+def get_top_three_locations(location_counts: Dict[str, int]) -> List[Tuple[str, int]]:
+    cnter = Counter(location_counts)
+    max_three = cnter.most_common(3)
+    return max_three
+
+
+def store_user_clusters(user_clusters: List[UserCluster]):
+    print(user_clusters)
+
+
+def store_popular_locations(popular_locations: List[PopularLocation]):
+    print(popular_locations)
+
+
+run_clustering()
