@@ -1,5 +1,6 @@
 from flask import request, Response
 from db.repository import Repository
+import json
 
 repo = Repository()
 
@@ -9,4 +10,4 @@ def post():
     return Response(status=201)
 
 def get():
-    return repo.getLocations()
+    return [l.to_serializable_dict() for l in repo.getLocations()]

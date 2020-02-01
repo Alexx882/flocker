@@ -12,14 +12,17 @@ class Location:
             self.timestamp = datetime.fromtimestamp(location_info['timestamp'])
             self.username = location_info['username']
 
-    def __repr__(self):
-        return json.dumps({
+    def to_serializable_dict(self):
+        return {
             "id": self.id,
             "latitude": self.latitude,
             "longitude": self.longitude,
             "timestamp": self.timestamp.__str__(),
             "username":  self.username
-        })
+        }
+
+    def __repr__(self):
+        return json.dumps(self.to_serializable_dict())
 
     def __str__(self):
         return f"Location({self.__repr__()})"
