@@ -56,8 +56,11 @@ class Clusterer:
         return labels.tolist()
 
     def label_locations(self, locations:List[Dict], labels:List) -> List:
+        if locations is None or labels is None:
+            return
+
         if len(locations) != len(labels):
-            raise Exception("locations and labels has to have same length")
+            raise ValueError("locations and labels has to have same length")
 
         for i in range(len(locations)):
             locations[i]['cluster_label'] = labels[i]
