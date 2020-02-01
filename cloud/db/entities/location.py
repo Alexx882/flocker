@@ -11,7 +11,7 @@ class Location:
             self.timestamp = datetime.fromtimestamp(location_info['timestamp'])
             self.timestamp_raw = location_info['timestamp']
             self.username = location_info['username']
-            self.id = f'{self.username}-{self.timestamp}'
+            self.id = f'{self.username}-{self.timestamp_raw}'
 
     def to_serializable_dict(self):
         return {
