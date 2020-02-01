@@ -3,7 +3,7 @@ from db.repository import Repository
 from datetime import datetime, timedelta
 from typing import List, Dict, Tuple
 from db.entities.location import Location
-from db.entities.favorite_location import FavoriteLocation
+from db.entities.popular_location import PopularLocation
 from db.entities.user_cluster import UserCluster
 import statistics
 from collections import Counter
@@ -19,7 +19,7 @@ time_slices = list(range(24))
 
 def run_clustering():
     user_clusters: List[UserCluster] = []
-    favorite_locations: List[FavoriteLocation] = []
+    popular_locations: List[PopularLocation] = []
     
     repo = Repository()
     all_location_traces = repo.getLocations()
@@ -71,13 +71,13 @@ def run_clustering():
 
             # print(f"{cur_date} @ {cur_hour}h-{cur_hour+1}h: {main_locations}")
 
-        # add the top three locations to the global favorite  location list
+        # add the top three locations to the global popular location list
         top_locations = get_top_three_locations(location_counter)
         top_locations = [l[0] for l in top_locations]
-        favorite_locations.append(FavoriteLocation(cur_date, top_locations))
+        popular_locations.append(PopularLocation(cur_date, top_locations))
 
     store_user_clusters(user_clusters)
-    store_favorite_locations(favorite_locations)
+    store_popular_locations(popular_locations)
 
 
 def get_main_location_for_user(location_traces: List[Location], username: str) -> dict:
@@ -118,8 +118,8 @@ def store_user_clusters(user_clusters: List[UserCluster]):
     print(user_clusters)
 
 
-def store_favorite_locations(favorite_locations: List[FavoriteLocation]):
-    print(favorite_locations)
+def store_popular_locations(popular_locations: List[PopularLocation]):
+    print(popular_locations)
 
 
 run_clustering()

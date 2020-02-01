@@ -1,6 +1,6 @@
 import json
 
-class FavoriteLocation:
+class PopularLocation:
     def __init__(self, date, top_locations: list):
         super().__init__()
         self.date = date
@@ -18,4 +18,4 @@ class FavoriteLocation:
         return json.dumps(self.to_serializable_dict())
 
     def __str__(self):
-        return f"FavoriteLocation({self.__repr__()})"
+        return f"PopularLocation({self.__repr__()})"
