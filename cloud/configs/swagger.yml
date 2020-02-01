@@ -53,7 +53,7 @@ paths:
             200:
                 description: "Successful operation"
                 schema:
-                  $ref: "#/definitions/Cluster"
+                  $ref: "#/definitions/UserCluster"
 
   /cluster.png:
     get:
@@ -75,19 +75,31 @@ definitions:
     properties:
       id:
         type: string
-        format: uuid
       username:
         type: "string"
       latitude:
         type: "number"
+        format: float
       longitude:
         type: "number"
+        format: float
       timestamp:
         type: "number"
-  Cluster:
+  UserCluster:
     type: "object"
     properties:
       id:
         type: string
-        format: uuid
+      date:
+        type: string
+      hour:
+        type: number
+      clusters:
+        type: object
+        additionalProperties:
+            type: object
+            additionalProperties:
+                type: array
+        example:
+            0: [alex, herry]
       

@@ -2,7 +2,9 @@ from __future__ import annotations
 import boto3
 from decimal import Decimal
 from db.entities.location import Location
+from db.entities.user_cluster import UserCluster
 from typing import List, Dict
+import json
 
 
 class DynamoDbRepository:
@@ -39,3 +41,17 @@ class DynamoDbRepository:
         table = self.database.Table('Location')
         response = table.scan()
         return [Location(l) for l in response['Items']]
+
+    def add_user_cluster(self, user_cluster: UserCluster):
+        '''Inserts a user cluster to the UserCluster table of AWS'''
+        table = self.database.Table('UserCluster')
+        table.put_item(
+            Item=user_cluster.to_serializable_dict(for_db=True)
+        )
+
+    def get_user_clusters(self) -> List[UserCluster]:
+        '''Reads all user clusters from the UserCluster table of AWS'''
+        table = self.database.Table('UserCluster')
+        response = table.scan()
+        return [UserCluster(c['date'], int(c['hour']), json.loads(c['clusters'])) for c in response['Items']]
+

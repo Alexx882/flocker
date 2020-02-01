@@ -1,5 +1,6 @@
 from processing.clusterer import Clusterer
 from db.repository import Repository
+from db.dynamodb_repository import DynamoDbRepository
 from datetime import datetime, timedelta
 from typing import List, Dict, Tuple
 from db.entities.location import Location
@@ -16,12 +17,13 @@ user_clusterer = Clusterer(epsilon=10**-4)
 
 time_slices = list(range(24))
 
+repo = Repository()
+dynrepo = DynamoDbRepository.get_instance()
 
 def run_clustering():
     user_clusters: List[UserCluster] = []
     popular_locations: List[PopularLocation] = []
     
-    repo = Repository()
     all_location_traces = repo.getLocations()
 
     # for each date in timestamp list
@@ -115,10 +117,12 @@ def get_top_three_locations(location_counts: Dict[str, int]) -> List[Tuple[str, 
 
 
 def store_user_clusters(user_clusters: List[UserCluster]):
-    print(user_clusters)
+    for c in user_clusters:
+        dynrepo.add_user_cluster(c)
 
 
 def store_popular_locations(popular_locations: List[PopularLocation]):
+    return
     print(popular_locations)
 
 
