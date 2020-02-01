@@ -10,6 +10,7 @@ class Location:
             self.latitude = location_info['latitude']
             self.longitude = location_info['longitude']
             self.timestamp = datetime.fromtimestamp(location_info['timestamp'])
+            self.timestamp_raw = location_info['timestamp']
             self.username = location_info['username']
 
     def to_serializable_dict(self):
@@ -17,7 +18,7 @@ class Location:
             "id": self.id,
             "latitude": self.latitude,
             "longitude": self.longitude,
-            "timestamp": self.timestamp.__str__(),
+            "timestamp": self.timestamp_raw,
             "username":  self.username
         }
 
