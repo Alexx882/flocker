@@ -143,7 +143,8 @@ class _TrackingViewState extends State<TrackingView> {
 
           if (data.length > 0) {
             if (DateTime.now().millisecondsSinceEpoch >
-                lastTimeAsked + 86400000)
+                lastTimeAsked + 86400000) {
+              lastTimeAsked = DateTime.now().millisecondsSinceEpoch;
               showDialog(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
@@ -170,7 +171,7 @@ class _TrackingViewState extends State<TrackingView> {
                   ],
                 ),
               );
-            else
+            } else
               print("wanted to show dialog but have to wait :(");
           }
         }
