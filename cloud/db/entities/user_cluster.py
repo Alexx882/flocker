@@ -8,12 +8,12 @@ class UserCluster:
         self.clusters = clusters
         self.id = f'{self.date}-{self.hour}'
 
-    def to_serializable_dict(self):
+    def to_serializable_dict(self, for_db=False):
         return {
             "id": self.id,
-            "date": self.date.__str__(),
+            "date": str(self.date),
             "hour": self.hour,
-            "clusters": self.clusters
+            "clusters": json.dumps(self.clusters) if for_db else self.clusters
         }
 
     def __repr__(self):

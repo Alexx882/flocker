@@ -1,24 +1,23 @@
 import io
 from flask import request, Response
-from db.repository import Repository
+from db.dynamodb_repository import DynamoDbRepository
+from db.entities.user_cluster import UserCluster
 from processing.clusterer import Clusterer
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
-repo = Repository()
-clusterer = Clusterer()
+repo = DynamoDbRepository.get_instance()
 
 def get():
-    locations = repo.getLocations()
-
-    clusters = clusterer.run(locations)
-
-    return clusters
+    clusters = repo.get_user_clusters()
+    return [c.to_serializable_dict() for c in clusters]
 
 def get_image():
-    locations = repo.getLocations()
+    return Response(status=501)
 
-    fig = clusterer.draw_locations(locations)
+    # locations = repo.getLocations()
 
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    return Response(output.getvalue(), mimetype="image/png")
+    # fig = clusterer.draw_locations(locations)
+
+    # output = io.BytesIO()
+    # FigureCanvas(fig).print_png(output)
+    # return Response(output.getvalue(), mimetype="image/png")

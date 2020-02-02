@@ -1,5 +1,5 @@
 from processing.clusterer import Clusterer
-from db.repository import Repository
+from db.dynamodb_repository import DynamoDbRepository
 from datetime import datetime, timedelta
 from typing import List, Dict, Tuple
 from db.entities.location import Location
@@ -7,7 +7,7 @@ from db.entities.popular_location import PopularLocation
 from db.entities.user_cluster import UserCluster
 import statistics
 from collections import Counter
-import time
+import json
 
 NR_DECIMAL_FOR_BEST_LOCATIONS = 4
 
@@ -16,13 +16,14 @@ user_clusterer = Clusterer(epsilon=10**-4)
 
 time_slices = list(range(24))
 
+dynrepo = DynamoDbRepository.get_instance()
+
 
 def run_clustering():
     user_clusters: List[UserCluster] = []
     popular_locations: List[PopularLocation] = []
-    
-    repo = Repository()
-    all_location_traces = repo.getLocations()
+
+    all_location_traces = dynrepo.get_locations()
 
     # for each date in timestamp list
     dates = {trace.timestamp.date() for trace in all_location_traces}
@@ -63,8 +64,8 @@ def run_clustering():
 
             # add locations for cur_hour to location counter
             for main_l in main_locations:
-                key = {'lat': round(main_l['latitude'], NR_DECIMAL_FOR_BEST_LOCATIONS),
-                       'long': round(main_l['longitude'], NR_DECIMAL_FOR_BEST_LOCATIONS)}.__repr__()
+                key = json.dumps({'lat': round(main_l['latitude'], NR_DECIMAL_FOR_BEST_LOCATIONS),
+                                  'long': round(main_l['longitude'], NR_DECIMAL_FOR_BEST_LOCATIONS)})
                 if key not in location_counter:
                     location_counter[key] = 0
                 location_counter[key] += 1
@@ -73,7 +74,7 @@ def run_clustering():
 
         # add the top three locations to the global popular location list
         top_locations = get_top_three_locations(location_counter)
-        top_locations = [l[0] for l in top_locations]
+        top_locations = [json.loads(l[0]) for l in top_locations]
         popular_locations.append(PopularLocation(cur_date, top_locations))
 
     store_user_clusters(user_clusters)
@@ -115,11 +116,13 @@ def get_top_three_locations(location_counts: Dict[str, int]) -> List[Tuple[str, 
 
 
 def store_user_clusters(user_clusters: List[UserCluster]):
-    print(user_clusters)
+    for c in user_clusters:
+        dynrepo.add_user_cluster(c)
 
 
 def store_popular_locations(popular_locations: List[PopularLocation]):
-    print(popular_locations)
+    for l in popular_locations:
+        dynrepo.add_popular_location(l)
 
 
 run_clustering()
