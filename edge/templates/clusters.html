@@ -1,0 +1,21 @@
+<!doctype html>
+<title>Clustering results:</title>
+<ul>
+{% for hour in hours %}
+  <li><b>{{ hour.date + ", " + hour.hour|string + ":00"}}</b>
+  <div>Clusters:
+    <ul>
+    {% for id, people in hour.clusters.items() %}
+    {% if id == "-1" %}
+    <li>no cluster: {{ people | join(", ") }}</li>
+    {% else %}
+    <li>{{ people | join(", ") }}</li>
+    {% endif %}
+    {% endfor %}
+
+    <br />
+    </ul>
+  </div>
+</li>
+  {% endfor %}
+  </ul>
