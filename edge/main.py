@@ -97,7 +97,7 @@ def filterAndPostData(lat, long, timestamp, username):
     if gc < 0.5:
         locationData = json.dumps({"latitude": lat, "longitude": long, "timestamp": timestamp, "username": username})
         r = requests.post('http://ec2-3-16-29-237.us-east-2.compute.amazonaws.com:5000/api/location', data = locationData,
-            #headers = {'Content-type': 'application/json', 'Accept': 'text/html'})
+            headers = {'Content-type': 'application/json', 'Accept': 'text/html'})
         return jsonify(distance=gc)
     else:
         return jsonify(distance="not university")
