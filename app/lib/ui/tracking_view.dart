@@ -1,5 +1,7 @@
+import 'package:battery/battery.dart';
 import 'package:flocker/edge/abstract_server_connection.dart';
-import 'package:flocker/edge/mock_server_connection.dart';
+import 'package:flocker/location/location.dart';
+import 'package:flocker/location/location_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:cron/cron.dart';
 import 'package:flutter/services.dart';
@@ -24,15 +26,16 @@ class _TrackingViewState extends State<TrackingView> {
   Animation<double> _breathingAnimation;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  Battery _battery;
 
   double _breathValue = 0;
   int counter = 0;
+  int lastTimeAsked = 0;
 
   static final String textPrefix = "Du wirst jetzt überwacht.\n";
   String _text = textPrefix;
 
   static final String helloPrefix = "Hallo,";
-  String _name;
 
   void _setupAnimation() {
     _breathingController = AnimationController(
@@ -77,34 +80,25 @@ class _TrackingViewState extends State<TrackingView> {
     try {
       LocationData currentLocation = await Location().getLocation();
 
-      bool success = await widget.serverConnection.uploadPositionToServer(
-        currentLocation.latitude,
-        currentLocation.longitude,
-        DateTime.now().millisecondsSinceEpoch,
-        _name,
-      );
+      LocalLocation l = LocalLocation();
+      l.lat = currentLocation.latitude.toString();
+      l.long = currentLocation.longitude.toString();
+      l.timestamp = DateTime.now().millisecondsSinceEpoch;
 
-      if (mounted) {
-        if (success)
-          _scaffoldKey.currentState.showSnackBar(
-            SnackBar(
-              content: Text("Data was uploaded successfully."),
-              backgroundColor: Colors.green,
-            ),
-          );
-        else
-          _scaffoldKey.currentState.showSnackBar(
-            SnackBar(
-              content: Text("Data upload failed."),
-              backgroundColor: Colors.red,
-            ),
-          );
+      LocationRepository.instance.add(l);
 
-        setState(() {
-          _text =
-              "$textPrefix ${currentLocation.latitude}/${currentLocation.longitude}";
-        });
-      }
+      if (mounted)
+        _scaffoldKey.currentState.showSnackBar(
+          SnackBar(
+            content: Text("Data was stored successfully."),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+      setState(() {
+        _text =
+            "$textPrefix ${currentLocation.latitude}/${currentLocation.longitude}";
+      });
     } catch (e) {
       print(e.toString());
     }
@@ -117,12 +111,21 @@ class _TrackingViewState extends State<TrackingView> {
     _updatePosition();
   }
 
-  void _setupName() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+  void _uploadData() async {
+    List<LocalLocation> locations = await LocationRepository.instance.all();
+    print("found ${locations.length} stored locations.");
+    String name = (await SharedPreferences.getInstance()).getString("username");
 
-    setState(() {
-      _name = preferences.getString("username");
-    });
+    for (LocalLocation l in locations) {
+      print("Upload of $l");
+      await LocationRepository.instance.delete({"id": l.id});
+      await widget.serverConnection.uploadPositionToServer(
+        double.parse(l.lat),
+        double.parse(l.long),
+        l.timestamp,
+        name,
+      );
+    }
   }
 
   @override
@@ -130,7 +133,49 @@ class _TrackingViewState extends State<TrackingView> {
     super.initState();
     _setupAnimation();
     _setupCronjob();
-    _setupName();
+    _battery = Battery();
+    _battery.onBatteryStateChanged.listen((BatteryState state) async {
+      if (state == BatteryState.charging) {
+        if (mounted) {
+          print("battery status changed.");
+
+          List<LocalLocation> data = await LocationRepository.instance.all();
+
+          if (data.length > 0) {
+            if (DateTime.now().millisecondsSinceEpoch >
+                lastTimeAsked + 86400000)
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: Text("Upload"),
+                  content: Text("Die Positionsdaten werden jetzt hochgeladen."),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text(
+                        "Ja",
+                        style: TextStyle(color: Colors.green),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _uploadData();
+                      },
+                    ),
+                    FlatButton(
+                      child: Text(
+                        "Nein",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+              );
+            else
+              print("wanted to show dialog but have to wait :(");
+          }
+        }
+      }
+    });
   }
 
   @override

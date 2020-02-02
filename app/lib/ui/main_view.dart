@@ -1,6 +1,7 @@
 import 'package:flocker/edge/abstract_server_connection.dart';
-import 'package:flocker/edge/mock_server_connection.dart';
+import 'package:flocker/edge/edge_server_connection.dart';
 import 'package:flocker/ui/cluster_view.dart';
+import 'package:flocker/ui/location_view.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,7 +15,7 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> with TickerProviderStateMixin {
   String _name;
   TabController _tabController;
-  final AbstractServerConnection serverConnection = MockServerConnection();
+  final AbstractServerConnection serverConnection = EdgeServerConnection();
 
   void _setupName() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -28,7 +29,7 @@ class _MainViewState extends State<MainView> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _setupName();
-    _tabController = TabController(vsync: this, length: 2);
+    _tabController = TabController(vsync: this, length: 3);
   }
 
   @override
@@ -40,13 +41,14 @@ class _MainViewState extends State<MainView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text(_name != null ? "Hello, $_name" : "Hello"),
           bottom: TabBar(
             tabs: [
               Tab(icon: Icon(Icons.location_on)),
+              Tab(icon: Icon(Icons.people)),
               Tab(icon: Icon(Icons.map)),
             ],
           ),
@@ -55,6 +57,7 @@ class _MainViewState extends State<MainView> with TickerProviderStateMixin {
           children: <Widget>[
             TrackingView(_tabController, this, serverConnection),
             ClusterView(serverConnection),
+            LocationView(serverConnection),
           ],
         ),
       ),

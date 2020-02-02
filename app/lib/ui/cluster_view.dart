@@ -19,9 +19,10 @@ class _ClusterViewState extends State<ClusterView> {
     List<Cluster> clusters =
         await widget.serverConnection.fetchClustersFromServer();
 
-    setState(() {
-      _clusters = clusters;
-    });
+    if (mounted)
+      setState(() {
+        _clusters = clusters;
+      });
   }
 
   @override
@@ -60,7 +61,8 @@ class _ClusterViewState extends State<ClusterView> {
           : ListView.separated(
               itemBuilder: (BuildContext context, int k) =>
                   SingleClusterView(_clusters[k]),
-              separatorBuilder: (BuildContext context, int k) => FractionallySizedBox(widthFactor: .8,child: Divider()),
+              separatorBuilder: (BuildContext context, int k) =>
+                  FractionallySizedBox(widthFactor: .8, child: Divider()),
               itemCount: _clusters.length,
               padding: EdgeInsets.only(top: 8),
             ),
