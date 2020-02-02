@@ -9,6 +9,7 @@ import statistics
 from collections import Counter
 import json
 
+DEBUG = False
 NR_DECIMAL_FOR_BEST_LOCATIONS = 4
 
 main_loc_clusterer = Clusterer(epsilon=10**-4)
@@ -116,13 +117,22 @@ def get_top_three_locations(location_counts: Dict[str, int]) -> List[Tuple[str, 
 
 
 def store_user_clusters(user_clusters: List[UserCluster]):
+    if DEBUG:
+        print(user_clusters)
+        return
+
     for c in user_clusters:
         dynrepo.add_user_cluster(c)
 
 
 def store_popular_locations(popular_locations: List[PopularLocation]):
+    if DEBUG:
+        print(popular_locations)
+        return
+
     for l in popular_locations:
         dynrepo.add_popular_location(l)
 
 
-run_clustering()
+if __name__ == "__main__":
+    run_clustering()
