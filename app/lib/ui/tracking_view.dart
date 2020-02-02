@@ -1,3 +1,5 @@
+import 'package:flocker/edge/abstract_server_connection.dart';
+import 'package:flocker/edge/mock_server_connection.dart';
 import 'package:flutter/material.dart';
 import 'package:cron/cron.dart';
 import 'package:flutter/services.dart';
@@ -7,12 +9,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 class TrackingView extends StatefulWidget {
   @override
   _TrackingViewState createState() => _TrackingViewState();
+
+  TrackingView(
+      this.parentTabBarController, this.tickerProvider, this.serverConnection);
+
+  final TabController parentTabBarController;
+  final TickerProvider tickerProvider;
+
+  final AbstractServerConnection serverConnection;
 }
 
-class _TrackingViewState extends State<TrackingView>
-    with TickerProviderStateMixin {
+class _TrackingViewState extends State<TrackingView> {
   AnimationController _breathingController;
   Animation<double> _breathingAnimation;
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   double _breathValue = 0;
   int counter = 0;
@@ -25,7 +36,7 @@ class _TrackingViewState extends State<TrackingView>
 
   void _setupAnimation() {
     _breathingController = AnimationController(
-      vsync: this,
+      vsync: widget.tickerProvider,
       duration: Duration(seconds: 3),
     );
 
@@ -37,9 +48,10 @@ class _TrackingViewState extends State<TrackingView>
     });
 
     _breathingController.addListener(() {
-      setState(() {
-        _breathValue = _breathingAnimation.value;
-      });
+      if (mounted)
+        setState(() {
+          _breathValue = _breathingAnimation.value;
+        });
     });
 
     _breathingController.forward();
@@ -48,15 +60,51 @@ class _TrackingViewState extends State<TrackingView>
       parent: _breathingController,
       curve: Curves.easeInCirc,
     );
+
+    widget.parentTabBarController.addListener(() {
+      bool animationActive = widget.parentTabBarController.index == 0;
+
+      if (animationActive) {
+        _breathingController.forward();
+      } else {
+        _breathingController.stop();
+        _breathingController.reset();
+      }
+    });
   }
 
   Future<void> _updatePosition() async {
     try {
       LocationData currentLocation = await Location().getLocation();
-      setState(() {
-        _text =
-            "$textPrefix ${currentLocation.latitude}/${currentLocation.longitude}";
-      });
+
+      bool success = await widget.serverConnection.uploadPositionToServer(
+        currentLocation.latitude,
+        currentLocation.longitude,
+        DateTime.now().millisecondsSinceEpoch,
+        _name,
+      );
+
+      if (mounted) {
+        if (success)
+          _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              content: Text("Data was uploaded successfully."),
+              backgroundColor: Colors.green,
+            ),
+          );
+        else
+          _scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              content: Text("Data upload failed."),
+              backgroundColor: Colors.red,
+            ),
+          );
+
+        setState(() {
+          _text =
+              "$textPrefix ${currentLocation.latitude}/${currentLocation.longitude}";
+        });
+      }
     } catch (e) {
       print(e.toString());
     }
@@ -88,15 +136,8 @@ class _TrackingViewState extends State<TrackingView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: const Color.fromRGBO(234, 232, 255, 1),
-      appBar: AppBar(
-        title: Text(
-          _name != null ? helloPrefix + " $_name" : "Hallo!",
-          style: TextStyle(
-            color: Color.fromRGBO(45, 49, 66, 1),
-          ),
-        ),
-      ),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

@@ -1,4 +1,4 @@
-import 'package:flocker/ui/tracking_view.dart';
+import 'package:flocker/ui/main_view.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,6 +9,7 @@ class UsernameView extends StatefulWidget {
 
 class _UsernameViewState extends State<UsernameView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   bool _loading = false;
   String _username;
 
@@ -27,7 +28,7 @@ class _UsernameViewState extends State<UsernameView> {
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (BuildContext context) => TrackingView(),
+          builder: (BuildContext context) => MainView(),
         ),
       );
     }
@@ -39,7 +40,7 @@ class _UsernameViewState extends State<UsernameView> {
     if (preferences.containsKey("username"))
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (BuildContext context) => TrackingView(),
+          builder: (BuildContext context) => MainView(),
         ),
       );
   }
@@ -53,7 +54,6 @@ class _UsernameViewState extends State<UsernameView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: const Color.fromRGBO(155, 196, 203, 1),
       appBar: AppBar(
         title: Text(
           "Wer bist du?",
