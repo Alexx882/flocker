@@ -43,6 +43,10 @@ class DynamoDbRepository:
         response = table.scan()
         return [Location(l) for l in response['Items']]
 
+    def get_generated_locations(self)-> List[Location]:        
+        with open('db/data.json', 'r') as f:
+            return [Location(ld) for ld in json.loads(f.read())]
+
     def add_user_cluster(self, user_cluster: UserCluster):
         '''Inserts a user cluster to the UserCluster table of AWS'''
         table = self.database.Table('UserCluster')

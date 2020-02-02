@@ -1,6 +1,5 @@
 import io
 from flask import request, Response
-from db.repository import Repository
 from db.dynamodb_repository import DynamoDbRepository
 from db.entities.user_cluster import UserCluster
 from processing.clusterer import Clusterer
