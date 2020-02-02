@@ -54,19 +54,6 @@ paths:
                 description: "Successful operation"
                 schema:
                   $ref: "#/definitions/UserCluster"
-
-  /cluster.png:
-    get:
-        operationId: "rest.cluster.get_image"
-        tags:
-            - "Clusters"
-        summary: "Get student communities per date per hour as image"
-        parameters: []
-        produces:
-            - "image/png"
-        responses:
-            200:
-                description: "Successful operation"
            
   /popular-locations:
     get:
