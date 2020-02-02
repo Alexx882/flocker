@@ -43,7 +43,7 @@ class DynamoDbRepository:
         response = table.scan()
         return [Location(l) for l in response['Items']]
 
-    def get_generated_locations(self)-> List[Location]:        
+    def get_generated_locations(self)-> List[Location]:
         with open('db/data.json', 'r') as f:
             return [Location(ld) for ld in json.loads(f.read())]
 

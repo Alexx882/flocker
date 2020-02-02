@@ -6,8 +6,8 @@ class Location:
     def __init__(self, location_info=None):
         super().__init__()
         if location_info is not None:
-            self.latitude = location_info['latitude']
-            self.longitude = location_info['longitude']
+            self.latitude = float(location_info['latitude'])
+            self.longitude = float(location_info['longitude'])
             self.timestamp = datetime.fromtimestamp(location_info['timestamp'])
             self.timestamp_raw = location_info['timestamp']
             self.username = location_info['username']
