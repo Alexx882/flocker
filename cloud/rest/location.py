@@ -1,12 +1,15 @@
 from flask import request, Response
-from db.repository import Repository
+from db.dynamodb_repository import DynamoDbRepository
+import json
+from db.entities.location import Location
+from typing import List
 
-repo = Repository()
+repo = DynamoDbRepository.get_instance()
 
 def post():
     body = request.json
-    repo.addLocation(body)
+    repo.add_location(Location(body))
     return Response(status=201)
 
 def get():
-    return repo.getLocations()
+    return [l.to_serializable_dict() for l in repo.get_locations()]
