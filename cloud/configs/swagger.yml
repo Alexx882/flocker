@@ -47,7 +47,7 @@ paths:
         operationId: "rest.cluster.get"
         tags:
             - "Clusters"
-        summary: "Get clustered data"
+        summary: "Get student communities per date per hour"
         parameters: []
         responses:
             200:
@@ -60,7 +60,7 @@ paths:
         operationId: "rest.cluster.get_image"
         tags:
             - "Clusters"
-        summary: "Get clustered data as image"
+        summary: "Get student communities per date per hour as image"
         parameters: []
         produces:
             - "image/png"
@@ -68,6 +68,18 @@ paths:
             200:
                 description: "Successful operation"
            
+  /popular-locations:
+    get:
+        operationId: "rest.popular_location.get"
+        tags:
+            - "Popular Locations"
+        summary: "Get most popular places per day"
+        parameters: []
+        responses:
+            200:
+                description: "Successful operation"
+                schema:
+                    $ref: "#/definitions/PopularLocation"
               
 definitions:
   Location:
@@ -85,6 +97,7 @@ definitions:
         format: float
       timestamp:
         type: "number"
+
   UserCluster:
     type: "object"
     properties:
@@ -97,9 +110,25 @@ definitions:
       clusters:
         type: object
         additionalProperties:
-            type: object
-            additionalProperties:
-                type: array
+            type: array
+            items: 
+                type: string
         example:
             0: [alex, herry]
-      
+
+  PopularLocation:
+    type: object
+    properties:
+        date:
+            type: string
+        top-locations:
+            type: array
+            items:
+                type: object
+                properties:
+                    lat:
+                        type: number
+                        format: float
+                    long:
+                        type: number
+                        format: float

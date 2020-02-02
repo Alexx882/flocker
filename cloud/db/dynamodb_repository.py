@@ -3,6 +3,7 @@ import boto3
 from decimal import Decimal
 from db.entities.location import Location
 from db.entities.user_cluster import UserCluster
+from db.entities.popular_location import PopularLocation
 from typing import List, Dict
 import json
 
@@ -55,3 +56,15 @@ class DynamoDbRepository:
         response = table.scan()
         return [UserCluster(c['date'], int(c['hour']), json.loads(c['clusters'])) for c in response['Items']]
 
+    def add_popular_location(self, popular_location: PopularLocation):
+        '''Inserts a popular location to the PopularLocation table of AWS'''
+        table = self.database.Table('PopularLocation')
+        table.put_item(
+            Item=popular_location.to_serializable_dict(for_db=True)
+        )
+
+    def get_popular_locations(self) -> List[PopularLocation]:
+        '''Reads all popular locations from the PopularLocation table of AWS'''
+        table = self.database.Table('PopularLocation')
+        response = table.scan()
+        return [PopularLocation(l['date'], json.loads(l['top-locations'])) for l in response['Items']]

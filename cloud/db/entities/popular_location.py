@@ -5,13 +5,11 @@ class PopularLocation:
         super().__init__()
         self.date = date
         self.top_locations = top_locations
-        self.id = f'{self.date}'
 
-    def to_serializable_dict(self):
+    def to_serializable_dict(self, for_db=False):
         return {
-            "id": self.id,
-            "date": self.date.__str__(),
-            "top-locations": self.top_locations
+            "date": str(self.date),
+            "top-locations": json.dumps(self.top_locations) if for_db else self.top_locations
         }
 
     def __repr__(self):
