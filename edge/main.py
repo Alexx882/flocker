@@ -34,6 +34,7 @@ locations = {
     "IW": [46.615064, 14.262086],
     "Z 108": [46.616078, 14.264292]
     }
+
 usernames = {
     "anja": ["UW", "HS C", "S 269", "buffet"],
     "herry": ["UW", "HS C", "S 269", "buffet", "IW"],
@@ -90,6 +91,13 @@ def getClusterResults():
      r = requests.get('http://ec2-3-16-29-237.us-east-2.compute.amazonaws.com:5000/api/cluster', headers = {'Accept': 'application/json'})
      return json.loads(r.content)
 
+@cache.cached(timeout=3600, key_prefix='popular_locations')
+def getPopularLocations():
+     r = requests.get('http://ec2-3-16-29-237.us-east-2.compute.amazonaws.com:5000/api/popular-locations', headers = {'Accept': 'application/json'})
+     return json.loads(r.content)
+
+
+
 def filterAndPostData(lat, long, timestamp, username):
     pos = (lat, long)
 
@@ -105,9 +113,9 @@ def filterAndPostData(lat, long, timestamp, username):
 class GPS(Resource):
 
     def get(self):
+        headers = {'Content-Type': 'text/html'}
         r = getClusterResults()
-        return str(r)
-
+        return make_response(render_template('clusters.html', hours=r),200,headers);
 
     def post(self):
 
@@ -121,6 +129,18 @@ class GPS(Resource):
         return filterAndPostData(lat, long, timestamp, username)
 
 
+class GPSClusters(Resource):
+
+    def get(self):
+        r = getClusterResults()
+        return r
+
+class GPSLocations(Resource):
+
+    def get(self):
+        r = getPopularLocations()
+        return r
+
 class GPSData(Resource):
 
     def get(self):
@@ -128,16 +148,12 @@ class GPSData(Resource):
 
         return generatedData
 
-class GPSClusters(Resource):
 
-    def get(self):
-        headers = {'Content-Type': 'text/html'}
-        r = getClusterResults()
-        return make_response(render_template('clusters.html', hours=r),200,headers);
 
 api.add_resource(GPS, '/')
 api.add_resource(GPSData, '/data')
 api.add_resource(GPSClusters, '/clusters')
+api.add_resource(GPSLocations, '/locations')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
