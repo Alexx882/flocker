@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 
 class SingleClusterView extends StatelessWidget {
   final Cluster cluster;
+  bool _noCluster = false;
 
-  SingleClusterView(this.cluster);
+  SingleClusterView(this.cluster) {
+    _noCluster = this.cluster.id == -1;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +26,15 @@ class SingleClusterView extends StatelessWidget {
                       "${cluster.name}",
                       style: TextStyle(
                         fontSize: 18.0,
+                        color: _noCluster ? Colors.grey : Colors.black,
                       ),
                     ),
                   ),
                   Text(
                     "${cluster.date.toIso8601String().substring(0, 10)} ${cluster.hour < 10 ? 0 : ''}${cluster.hour}:00",
+                    style: TextStyle(
+                      color: _noCluster ? Colors.grey : Colors.black,
+                    ),
                   ),
                 ],
               ),
@@ -40,6 +47,7 @@ class SingleClusterView extends StatelessWidget {
                         f,
                         style: TextStyle(
                           fontSize: 16.0,
+                          color: _noCluster ? Colors.grey : Colors.black,
                         ),
                       ),
                     )
