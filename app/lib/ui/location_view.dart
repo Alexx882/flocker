@@ -1,4 +1,5 @@
 import 'package:flocker/cluster/model/point_of_interest.dart';
+import 'package:flocker/color_manager.dart';
 import 'package:flocker/edge/abstract_server_connection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -46,6 +47,9 @@ class _LocationViewState extends State<LocationView> {
                       aspectRatio: 1,
                       child: CircularProgressIndicator(
                         strokeWidth: 6,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          ColorManager.colorAnja,
+                        ),
                       ),
                     ),
                   ),
@@ -78,11 +82,16 @@ class _LocationViewState extends State<LocationView> {
                   markers: _points
                       .map(
                         (point) => Marker(
-                          width: 5,
-                          height: 10,
-                          point: LatLng(point.lat, point.long),
-                          builder: (BuildContext context) =>
-                              Icon(Icons.location_on),
+                          width: 1,
+                          height: 1,
+                          point: LatLng(
+                            point.lat + 0.00014,
+                            point.long + 0.00000,
+                          ),
+                          builder: (BuildContext context) => Icon(
+                            Icons.add,
+                            color: ColorManager.colorAnja,
+                          ),
                         ),
                       )
                       .toList(),

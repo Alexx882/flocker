@@ -1,4 +1,5 @@
 import 'package:flocker/cluster/model/cluster.dart';
+import 'package:flocker/color_manager.dart';
 import 'package:flocker/edge/abstract_server_connection.dart';
 import 'package:flocker/ui/single_cluster_view.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,9 @@ class _ClusterViewState extends State<ClusterView> {
                       aspectRatio: 1,
                       child: CircularProgressIndicator(
                         strokeWidth: 6,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          ColorManager.colorAnja,
+                        ),
                       ),
                     ),
                   ),

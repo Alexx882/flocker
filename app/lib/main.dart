@@ -8,12 +8,15 @@ class MyApp extends StatelessWidget {
   final Color colorPaleCerulean = const Color.fromRGBO(155, 196, 203, 1);
   final Color colorGunmetal = const Color.fromRGBO(45, 49, 66, 1);
 
+  final Color colorAnja = const Color(0xFF185b67);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flocker - Where dem Cool Kids At',
       theme: ThemeData(
-        primaryColor: colorAeroBlue,
+        primaryColor: colorAnja,
         accentColor: colorAeroBlue,
         buttonTheme: ButtonThemeData(
           buttonColor: colorPaleCerulean,

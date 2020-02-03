@@ -35,8 +35,6 @@ class _TrackingViewState extends State<TrackingView> {
   static final String textPrefix = "Du wirst jetzt überwacht.\n";
   String _text = textPrefix;
 
-  static final String helloPrefix = "Hallo,";
-
   void _setupAnimation() {
     _breathingController = AnimationController(
       vsync: widget.tickerProvider,

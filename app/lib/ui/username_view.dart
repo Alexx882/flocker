@@ -1,3 +1,4 @@
+import 'package:flocker/color_manager.dart';
 import 'package:flocker/ui/main_view.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,13 +59,13 @@ class _UsernameViewState extends State<UsernameView> {
         title: Text(
           "Wer bist du?",
           style: TextStyle(
-            color: const Color.fromRGBO(45, 49, 66, 1),
+            color: Colors.white,
           ),
         ),
       ),
       body: Center(
         child: Card(
-          color: const Color.fromRGBO(168, 249, 255, .8),
+          color: ColorManager.colorAnja,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: FractionallySizedBox(
@@ -80,33 +81,30 @@ class _UsernameViewState extends State<UsernameView> {
                       child: Text(
                         "Sag uns einen Namen!",
                         style: TextStyle(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ),
                     ),
                     SizedBox(height: 8),
                     Text(
                       "Wie heißt du? Unter diesem Namen wirst du dann auch anderen angezeigt.",
-                      style: TextStyle(
-                        fontSize: 20.0,
-                      ),
+                      style: TextStyle(fontSize: 20.0, color: Colors.white),
                     ),
                     TextFormField(
-                      cursorColor: const Color.fromRGBO(45, 49, 66, 1),
+                      style: TextStyle(color: Colors.white),
+                      cursorColor: Colors.white,
                       decoration: InputDecoration(
                         labelText: "Name",
-                        labelStyle: TextStyle(
-                          color: const Color.fromRGBO(45, 49, 66, 1),
-                        ),
-                        focusColor: const Color.fromRGBO(45, 49, 66, 1),
+                        labelStyle: TextStyle(color: Colors.white),
+                        focusColor: Colors.white,
                         focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                          color: const Color.fromRGBO(45, 49, 66, 1),
+                          color: Colors.white,
                         )),
                         enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                          color: const Color.fromRGBO(45, 49, 66, 1),
+                          color: Colors.white,
                         )),
                       ),
                       onSaved: (String value) => _username = value,
@@ -137,7 +135,7 @@ class _UsernameViewState extends State<UsernameView> {
                           Text(
                             "Loslegen!",
                             style: TextStyle(
-                              color: const Color.fromRGBO(45, 49, 66, 1),
+                              color: Colors.white,
                             ),
                           ),
                         ],
