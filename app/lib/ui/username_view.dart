@@ -57,7 +57,7 @@ class _UsernameViewState extends State<UsernameView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Wer bist du?",
+          "Who are you?",
           style: TextStyle(
             color: Colors.white,
           ),
@@ -79,7 +79,7 @@ class _UsernameViewState extends State<UsernameView> {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Sag uns einen Namen!",
+                        "Tell us your name!",
                         style: TextStyle(
                             fontSize: 24.0,
                             fontWeight: FontWeight.bold,
@@ -88,7 +88,8 @@ class _UsernameViewState extends State<UsernameView> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      "Wie heißt du? Unter diesem Namen wirst du dann auch anderen angezeigt.",
+                      // "Wie heißt du? Unter diesem Namen wirst du dann auch anderen angezeigt.",
+                      "What's your name? You will be displayed under this name to the other users.",
                       style: TextStyle(fontSize: 20.0, color: Colors.white),
                     ),
                     TextFormField(
@@ -112,7 +113,7 @@ class _UsernameViewState extends State<UsernameView> {
                         String sanitized = value.trim();
 
                         if (sanitized.isEmpty)
-                          return "Es muss ein Name angegeben werden!";
+                          return "A name has to be provided!";
 
                         return null;
                       },
@@ -133,7 +134,7 @@ class _UsernameViewState extends State<UsernameView> {
                               : SizedBox(),
                           SizedBox(width: 8),
                           Text(
-                            "Loslegen!",
+                            "Start out!",
                             style: TextStyle(
                               color: Colors.white,
                             ),

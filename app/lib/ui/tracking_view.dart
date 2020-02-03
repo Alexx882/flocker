@@ -32,7 +32,7 @@ class _TrackingViewState extends State<TrackingView> {
   int counter = 0;
   int lastTimeAsked = 0;
 
-  static final String textPrefix = "Du wirst jetzt überwacht.\n";
+  static final String textPrefix = "You are being tracked right now!\n";
   String _text = textPrefix;
 
   void _setupAnimation() {
@@ -105,7 +105,7 @@ class _TrackingViewState extends State<TrackingView> {
   void _setupCronjob() {
     Cron cron = Cron();
 
-    cron.schedule(Schedule.parse("*/1 * * * *"), _updatePosition);
+    cron.schedule(Schedule.parse("*/5 * * * *"), _updatePosition);
     _updatePosition();
   }
 
@@ -147,11 +147,11 @@ class _TrackingViewState extends State<TrackingView> {
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
                   title: Text("Upload"),
-                  content: Text("Die Positionsdaten werden jetzt hochgeladen."),
+                  content: Text("Should the data be uploaded now?"),
                   actions: <Widget>[
                     FlatButton(
                       child: Text(
-                        "Ja",
+                        "Yes",
                         style: TextStyle(color: Colors.green),
                       ),
                       onPressed: () {
@@ -161,7 +161,7 @@ class _TrackingViewState extends State<TrackingView> {
                     ),
                     FlatButton(
                       child: Text(
-                        "Nein",
+                        "No",
                         style: TextStyle(color: Colors.red),
                       ),
                       onPressed: () => Navigator.of(context).pop(),
@@ -231,6 +231,7 @@ class _TrackingViewState extends State<TrackingView> {
                           SizedBox(height: 8),
                           Text(
                             _text,
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 20.0,
                               color: Color.fromRGBO(45, 49, 66, 1),
@@ -247,7 +248,7 @@ class _TrackingViewState extends State<TrackingView> {
             SizedBox(height: 16),
 
             RaisedButton(
-              child: Text("Beenden"),
+              child: Text("Close"),
               onPressed: () {
                 SystemNavigator.pop();
               },
